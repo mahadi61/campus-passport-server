@@ -14,7 +14,7 @@ app.use(express.json());
 // userName: campusDB
 // pass: MjOYYTAuUp8JYnxA
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = "mongodb+srv://campusDB:MjOYYTAuUp8JYnxA@cluster0.2ev6cf0.mongodb.net/?retryWrites=true&w=majority";
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -59,6 +59,26 @@ app.get('/featured-colleges', async (req, res)=>{
   res.send(result);
 })
 
+// to get single college details
+app.get('/college/:id', async (req, res)=>{
+  const id = req.params.id;
+  const query = { _id: new ObjectId(id) };
+  const result = await collegeCollection.findOne(query);
+  res.send(result);
+})
+
+// to get single college for search in navbar
+app.get('/single-college/:name', async (req, res)=>{
+  const name = req.params.name;
+  const query = { name: { $regex: new RegExp(`^${name}`, 'i') } };
+  const college = await collegeCollection.findOne(query);
+
+  if (!college) {
+    return res.status(404).json({ error: 'College not found' });
+  }
+  res.json(college);
+})
+
 // store user data on database
 app.post('/add-user', async(req, res)=>{
   const userInfo = req.body;
@@ -66,6 +86,12 @@ app.post('/add-user', async(req, res)=>{
   res.send(result);
 })
 
+// add application on my college
+app.post('/apply', async(req, res)=>{
+  const data = req.body;
+  const result = await myCollegeCollection.insertOne(data);
+  res.send(result);
+})
 
 
 
