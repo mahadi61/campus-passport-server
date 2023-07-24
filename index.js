@@ -28,6 +28,9 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -94,6 +97,14 @@ app.post('/apply', async(req, res)=>{
   res.send(result);
 })
 
+
+// get my college data 
+app.get("/my-college/:email", async(req, res)=>{
+  const email = req.params.email;
+  const query = { email: email };
+  const result = await myCollegeCollection.find(query).toArray();
+  res.send(result)
+})
 
 
 
