@@ -102,7 +102,6 @@ app.post('/review/:id', async(req, res)=>{
   const review = req.body.review;
   const rating = req.body.rating;
   const id = req.params.id;
-  console.log(review, rating, id);
   const filter = { _id: new ObjectId(id)};
   const options = { upsert: true };
   const updateDoc = {
@@ -117,6 +116,28 @@ app.post('/review/:id', async(req, res)=>{
 })
 
 
+// update user profile
+app.post('/update-profile/:email', async(req, res)=>{
+  const email = req.params.email;
+  const name = req.body.name;
+  const universityName = req.body.universityName;
+  const address = req.body.address;
+  const filter = { email: email};
+  const options = { upsert: true };
+  const updateDoc = {
+    $set: {
+      email: email,
+      universityName: universityName,
+      address: address,
+      name:name
+    },
+  };
+  const result = await userCollection.updateOne(filter, updateDoc, options);
+  console.log(result);
+  res.send(result);
+})
+
+
 // get my college data 
 app.get("/my-college/:email", async(req, res)=>{
   const email = req.params.email;
@@ -125,6 +146,7 @@ app.get("/my-college/:email", async(req, res)=>{
   res.send(result)
 })
 
+ 
 
 
 
