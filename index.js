@@ -97,6 +97,25 @@ app.post('/apply', async(req, res)=>{
   res.send(result);
 })
 
+// add review
+app.post('/review/:id', async(req, res)=>{
+  const review = req.body.review;
+  const rating = req.body.rating;
+  const id = req.params.id;
+  console.log(review, rating, id);
+  const filter = { _id: new ObjectId(id)};
+  const options = { upsert: true };
+  const updateDoc = {
+    $set: {
+      review: review,
+      rating: rating
+    },
+  };
+  const result = await collegeCollection.updateOne(filter, updateDoc, options);
+  console.log(result);
+  res.send(result);
+})
+
 
 // get my college data 
 app.get("/my-college/:email", async(req, res)=>{
